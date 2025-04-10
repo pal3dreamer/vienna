@@ -1,7 +1,10 @@
 #![allow(unused)]
+use std::collections::HashSet;
+use std::sync::Arc;
+
 use vienna::random_name;
 use anyhow::anyhow;
-use futures_util::StreamExt;
+use futures_util::{lock::Mutex, StreamExt};
 use futures_util::sink::SinkExt;
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
@@ -11,6 +14,9 @@ use tokio::{
 use tokio_util::codec::{FramedRead, FramedWrite, LinesCodec};
 const HELP_MSG: &str = include_str!("help.txt");
 
+#[derive(Clone)]
+
+struct Names (Arc<Mutex<HashSet<String>>>);
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let server = TcpListener::bind("localhost:8080").await?;
